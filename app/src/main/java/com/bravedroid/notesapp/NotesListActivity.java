@@ -1,17 +1,20 @@
 package com.bravedroid.notesapp;
 
+import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.bravedroid.notesapp.adapters.NotesRecyclerAdapter;
 import com.bravedroid.notesapp.models.Note;
+import com.bravedroid.notesapp.util.VerticalSpacingItemDecorator;
 
 import java.util.ArrayList;
 
-public class NotesListActivity extends AppCompatActivity {
+public class NotesListActivity extends AppCompatActivity implements NotesRecyclerAdapter.OnNoteListener {
     final static String TAG = "NotesListActivity";
     // ui component
     private RecyclerView mRecyclerView;
@@ -22,48 +25,46 @@ public class NotesListActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_notes);
         mRecyclerView = findViewById(R.id.recyclerView);
 
         Note note = new Note("some title", "some content", "timestamp");
         Log.d(TAG, "**************on create : my note " + note.toString());
+
         initRecyclerView();
+        insertFakeNotes();
+
+        setActionBar((android.widget.Toolbar) findViewById(R.id.notes_toolbar));
+        setTitle("Notes");
     }
 
     private void insertFakeNotes() {
-        for (int i = 0; i < 1000; i++){
-
+        for (int i = 0; i < 1000; i++) {
+            Note note = new Note();
+            note.setTitle("title #" + i);
+            note.setContent("content #" + i);
+            note.setTimestamp("jan 2019");
+            mNotes.add(note);
         }
+        mNotesRecyclerAdapter.notifyDataSetChanged();
     }
+
 
     private void initRecyclerView() {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(linearLayoutManager);
-        mNotesRecyclerAdapter = new NotesRecyclerAdapter(mNotes);
+        VerticalSpacingItemDecorator itemDecorator = new VerticalSpacingItemDecorator(10);
+        mRecyclerView.addItemDecoration(itemDecorator);
+        mNotesRecyclerAdapter = new NotesRecyclerAdapter(mNotes, this);
         mRecyclerView.setAdapter(mNotesRecyclerAdapter);
     }
 
     @Override
-    protected void onPause() {
-        super.onPause();
-        Log.d(TAG, "onPause: called");
-    }
+    public void onNoteClick(int position) {
+        Log.d(TAG, "onNoteClick: clicked" + position);
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        Log.d(TAG, "onResume: called");
-    }
-
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        Log.d(TAG, "onSaveInstanceState: called");
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        Log.d(TAG, "onDestroy: called");
+        Intent intent = new Intent(this, NoteActivity.class);
+        intent.putExtra("selected_note", mNotes.get(position));
+        startActivity(intent);
     }
 }
