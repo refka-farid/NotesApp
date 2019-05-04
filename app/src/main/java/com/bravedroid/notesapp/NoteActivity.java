@@ -22,5 +22,6 @@ public class NoteActivity extends AppCompatActivity {
         }
 
         // view
+        //edit
     }
 }

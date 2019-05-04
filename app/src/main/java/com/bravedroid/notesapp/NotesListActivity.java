@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -34,7 +35,7 @@ public class NotesListActivity extends AppCompatActivity implements NotesRecycle
         initRecyclerView();
         insertFakeNotes();
 
-        setActionBar((android.widget.Toolbar) findViewById(R.id.notes_toolbar));
+        setSupportActionBar((Toolbar) findViewById(R.id.notes_toolbar));
         setTitle("Notes");
     }
 
