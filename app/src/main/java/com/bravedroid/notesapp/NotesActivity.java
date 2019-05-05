@@ -14,13 +14,15 @@ import com.bravedroid.notesapp.models.Note;
 import com.bravedroid.notesapp.util.VerticalSpacingItemDecorator;
 
 import java.util.ArrayList;
+import java.util.List;
 
-public class NotesListActivity extends AppCompatActivity implements NotesRecyclerAdapter.OnNoteListener {
-    final static String TAG = "NotesListActivity";
+public class NotesActivity extends AppCompatActivity implements NotesRecyclerAdapter.OnNoteListener {
+    final static String TAG = "NotesActivity";
     // ui component
     private RecyclerView mRecyclerView;
     // vars
-    private ArrayList<Note> mNotes = new ArrayList<>();
+    // TODO: 04/05/2019 should delegate NoteRepository to fetch create data
+    private List<Note> mNotes = new ArrayList<>();
     private NotesRecyclerAdapter mNotesRecyclerAdapter;
 
     @Override
@@ -28,17 +30,29 @@ public class NotesListActivity extends AppCompatActivity implements NotesRecycle
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notes);
         mRecyclerView = findViewById(R.id.recyclerView);
-
+        /*
         Note note = new Note("some title", "some content", "timestamp");
         Log.d(TAG, "**************on create : my note " + note.toString());
-
+        */
+        initToolbar();
         initRecyclerView();
         insertFakeNotes();
+    }
 
-        setSupportActionBar((Toolbar) findViewById(R.id.notes_toolbar));
+    private void initToolbar() {
+        Toolbar toolbar = findViewById(R.id.notes_toolbar);
+        setSupportActionBar(toolbar);
         setTitle("Notes");
     }
 
+    private void initRecyclerView() {
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        mRecyclerView.addItemDecoration(new VerticalSpacingItemDecorator(10));
+        mNotesRecyclerAdapter = new NotesRecyclerAdapter(mNotes, this);
+        mRecyclerView.setAdapter(mNotesRecyclerAdapter);
+    }
+
+    // TODO: 04/05/2019 should delegate NoteRepository to insert fake data
     private void insertFakeNotes() {
         for (int i = 0; i < 1000; i++) {
             Note note = new Note();
@@ -47,24 +61,16 @@ public class NotesListActivity extends AppCompatActivity implements NotesRecycle
             note.setTimestamp("jan 2019");
             mNotes.add(note);
         }
+        //refresh the adapter
         mNotesRecyclerAdapter.notifyDataSetChanged();
     }
 
-
-    private void initRecyclerView() {
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
-        mRecyclerView.setLayoutManager(linearLayoutManager);
-        VerticalSpacingItemDecorator itemDecorator = new VerticalSpacingItemDecorator(10);
-        mRecyclerView.addItemDecoration(itemDecorator);
-        mNotesRecyclerAdapter = new NotesRecyclerAdapter(mNotes, this);
-        mRecyclerView.setAdapter(mNotesRecyclerAdapter);
-    }
-
+    // TODO: 04/05/2019 change to lambda syntax
     @Override
     public void onNoteClick(int position) {
         Log.d(TAG, "onNoteClick: clicked" + position);
 
-        Intent intent = new Intent(this, NoteActivity.class);
+        Intent intent = new Intent(this, NoteDetailActivity.class);
         intent.putExtra("selected_note", mNotes.get(position));
         startActivity(intent);
     }
