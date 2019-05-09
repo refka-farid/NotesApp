@@ -50,7 +50,7 @@
         android:textSize="23sp"
         android:visibility="visible" />
 
-    <TextView
+    <EditText
         android:id="@+id/note_edit_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"

@@ -25,11 +25,13 @@
         </Toolbar>
     </com.google.android.material.appbar.AppBarLayout>
 
-    <EditText
+    <com.bravedroid.notesapp.LineEditText
             android:id="@+id/note_text"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:padding="5dp"
             android:textColor="@color/black"
-            android:textSize="23sp"/>
+            android:textSize="23sp"
+        android:gravity="top"
+        android:imeOptions="flagNoExtractUi"/>
 </LinearLayout>
