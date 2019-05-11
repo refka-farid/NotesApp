@@ -45,6 +45,7 @@ dependencies {
 
     //Recyvler View
     implementation "androidx.recyclerview:recyclerview:$recycler_version"
+    implementation"androidx.lifecycle:lifecycle-livedata:2.0.0-rc01"
 
     // design support (for toolbars)
     implementation "com.google.android.material:material:$recycler_version"

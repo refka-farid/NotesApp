@@ -1,5 +1,6 @@
 package com.bravedroid.notesapp.adapters;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bravedroid.notesapp.R;
 import com.bravedroid.notesapp.models.Note;
+import com.bravedroid.notesapp.util.Utility;
 
 import java.util.List;
 
@@ -18,6 +20,7 @@ import static com.bravedroid.notesapp.adapters.NotesRecyclerAdapter.NoteViewHold
 public class NotesRecyclerAdapter extends RecyclerView.Adapter<NoteViewHolder> {
     private List<Note> mNotes;
     private OnNoteListener mOnNoteListener;
+    private final static String TAG = "NotesRecyclerAdapter";
 
     public NotesRecyclerAdapter(List<Note> notes, OnNoteListener onNoteListener) {
         this.mNotes = notes;
@@ -35,6 +38,16 @@ public class NotesRecyclerAdapter extends RecyclerView.Adapter<NoteViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull NoteViewHolder noteViewHolder, int position) {
+        try {
+            String month = mNotes.get(position).getTimestamp().substring(0, 2);
+            month = Utility.getMonthFromNumber(month);
+            String year = mNotes.get(position).getTimestamp().substring(3);
+            String timestamp = month + " " + year;
+            noteViewHolder.timestampTV.setText(timestamp);
+            noteViewHolder.titleTV.setText(mNotes.get(position).getTitle());
+        } catch (NullPointerException e) {
+            Log.d(TAG, "onBindViewHolder: " + e.getMessage());
+        }
         noteViewHolder.timestampTV.setText(mNotes.get(position).getTimestamp());
         noteViewHolder.titleTV.setText(mNotes.get(position).getTitle());
     }

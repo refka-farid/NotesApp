@@ -5,10 +5,10 @@ import com.bravedroid.notesapp.models.Note;
 import java.util.ArrayList;
 import java.util.List;
 
-public interface NoteRepository {
+public interface NoteRepositoryInterface {
     List<Note> getNotes();
 
-    class FakeNoteRepository implements NoteRepository {
+    class FakeNoteRepositoryInterface implements NoteRepositoryInterface {
 
         private List<Note> mNotes = new ArrayList<>();
 
