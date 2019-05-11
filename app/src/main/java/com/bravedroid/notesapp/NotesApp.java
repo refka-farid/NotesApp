@@ -2,13 +2,21 @@ package com.bravedroid.notesapp;
 
 import android.app.Application;
 
-import com.bravedroid.notesapp.repository.NoteRepositoryInterface;
-import com.bravedroid.notesapp.repository.NoteRepositoryInterface.FakeNoteRepositoryInterface;
+import com.bravedroid.notesapp.presentation.NoteRepository;
+import com.bravedroid.notesapp.repository.NoteRepositoryImpl;
 
 public class NotesApp extends Application {
-    private NoteRepositoryInterface noteRepositoryInterface = new FakeNoteRepositoryInterface();
+    private NoteRepository noteRepository;
 
-    public NoteRepositoryInterface getNoteRepositoryInterface() {
-        return noteRepositoryInterface;
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        noteRepository = new NoteRepositoryImpl(this);
+//        noteRepository = new NoteRepository.NoteRepositoryImplFake();
     }
+
+    public NoteRepository getNoteRepository() {
+        return noteRepository;
+    }
+
 }

@@ -1,4 +1,4 @@
-package com.bravedroid.notesapp.util;
+package com.bravedroid.notesapp.presentation.util;
 
 import android.graphics.Rect;
 import android.view.View;

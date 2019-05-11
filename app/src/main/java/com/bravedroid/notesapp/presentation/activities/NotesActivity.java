@@ -1,4 +1,4 @@
-package com.bravedroid.notesapp;
+package com.bravedroid.notesapp.presentation.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,13 +13,15 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bravedroid.notesapp.adapters.NotesRecyclerAdapter;
-import com.bravedroid.notesapp.models.Note;
-import com.bravedroid.notesapp.persistence.NoteRepository;
-import com.bravedroid.notesapp.repository.NoteRepositoryInterface;
-import com.bravedroid.notesapp.util.VerticalSpacingItemDecorator;
+import com.bravedroid.notesapp.NotesApp;
+import com.bravedroid.notesapp.R;
+import com.bravedroid.notesapp.presentation.NoteRepository;
+import com.bravedroid.notesapp.presentation.adapters.NotesRecyclerAdapter;
+import com.bravedroid.notesapp.repository.models.Note;
+import com.bravedroid.notesapp.presentation.util.VerticalSpacingItemDecorator;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class NotesActivity extends AppCompatActivity implements NotesRecyclerAdapter.OnNoteListener, View.OnClickListener {
@@ -28,10 +30,9 @@ public class NotesActivity extends AppCompatActivity implements NotesRecyclerAda
     private RecyclerView mRecyclerView;
 
     // vars
-    private List<Note> mNotes;
+    private List<Note> mNotes = new ArrayList<>();
     private NotesRecyclerAdapter mNotesRecyclerAdapter;
-    private NoteRepositoryInterface mNoteRepositoryInterfaceInterface;
-    private NoteRepository mNoteRepository ;
+    private NoteRepository mNoteRepository;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,14 +43,16 @@ public class NotesActivity extends AppCompatActivity implements NotesRecyclerAda
         ((FloatingActionButton) findViewById(R.id.fab)).setOnClickListener(this);
         initToolbar();
         initRecyclerView();
-        mNoteRepository = new NoteRepository(this);
+
+        mNoteRepository = ((NotesApp) getApplication()).getNoteRepository();
+        //  mNoteRepository = new NoteRepositoryImpl(this);
+
         retrieveNotes();
         Log.d(TAG, "onCreate: thread :" + Thread.currentThread().getName());
-        mNoteRepository.insertNoteTask(new Note());
     }
 
     private void retrieveNotes() {
-        mNoteRepository.retreiveNoteTask().observe(this, new Observer<List<Note>>() {
+        mNoteRepository.retrieveNoteTask().observe(this, new Observer<List<Note>>() {
             @Override
             public void onChanged(List<Note> notes) {
                 if (mNotes.size() > 0) {
@@ -72,8 +75,8 @@ public class NotesActivity extends AppCompatActivity implements NotesRecyclerAda
     private void initRecyclerView() {
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mRecyclerView.addItemDecoration(new VerticalSpacingItemDecorator(10));
-        mNoteRepositoryInterfaceInterface = ((NotesApp) getApplication()).getNoteRepositoryInterface();
-        mNotes = mNoteRepositoryInterfaceInterface.getNotes();
+        // mNoteRepositoryInterface = ((NotesApp) getApplication()).getNoteRepository();
+        // mNotes = mNoteRepositoryInterface.getNotes();
         new ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(mRecyclerView);
         mNotesRecyclerAdapter = new NotesRecyclerAdapter(mNotes, this);
         mRecyclerView.setAdapter(mNotesRecyclerAdapter);
