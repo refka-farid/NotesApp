@@ -16,7 +16,9 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.bravedroid.notesapp.NotesApp;
 import com.bravedroid.notesapp.R;
+import com.bravedroid.notesapp.presentation.NoteRepository;
 import com.bravedroid.notesapp.presentation.view.LineEditText;
 import com.bravedroid.notesapp.repository.models.Note;
 import com.bravedroid.notesapp.repository.NoteRepositoryImpl;
@@ -44,7 +46,7 @@ public class NoteDetailActivity extends AppCompatActivity implements
     private Note mNoteInitial;
     private GestureDetector mGestureDetector;
     private int mMode;
-    private NoteRepositoryImpl mNoteRepositoryImpl;
+    private NoteRepository mNoteRepository;
     private Note mFinalNote;
 
 
@@ -61,7 +63,7 @@ public class NoteDetailActivity extends AppCompatActivity implements
         mBackArrow = findViewById(R.id.toolbar_back_arrow);
 
         setListeners();
-        mNoteRepositoryImpl = new NoteRepositoryImpl(this);
+        mNoteRepository =  ((NotesApp) getApplication()).getNoteRepository();
         if (getIncomingIntent()) {
             //this is a new note,(EDIT MODE)
             setNewNoteProperties();
@@ -110,11 +112,11 @@ public class NoteDetailActivity extends AppCompatActivity implements
     }
 
     private void updateNewNote() {
-        mNoteRepositoryImpl.updateNote(mFinalNote);
+        mNoteRepository.updateNote(mFinalNote);
     }
 
     private void saveNewNote() {
-        mNoteRepositoryImpl.insertNoteTask(mFinalNote);
+        mNoteRepository.insertNoteTask(mFinalNote);
     }
 
     private void disableContentInteraction() {
