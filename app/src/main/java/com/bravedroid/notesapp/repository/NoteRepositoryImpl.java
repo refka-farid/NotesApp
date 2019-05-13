@@ -10,6 +10,7 @@ import com.bravedroid.notesapp.repository.persistence.NoteDataBase;
 import com.bravedroid.notesapp.repository.persistence.async.DeleteAsyncTask;
 import com.bravedroid.notesapp.repository.persistence.async.InsertAsyncTask;
 import com.bravedroid.notesapp.repository.persistence.async.UpdateAsyncTask;
+import com.bravedroid.notesapp.repository.persistence.async.WorkerAsyncTask;
 
 import java.util.List;
 
@@ -32,11 +33,13 @@ public class NoteRepositoryImpl implements NoteRepository {
 
     @Override
     public void updateNote(Note note) {
-        new UpdateAsyncTask(mNoteDatabase.getNoteDao()).execute(note);
+        //new UpdateAsyncTask(mNoteDatabase.getNoteDao()).execute(note);
+        new WorkerAsyncTask(() -> mNoteDatabase.getNoteDao().update(note));
     }
 
     @Override
     public void deleteNote(Note note) {
         new DeleteAsyncTask(mNoteDatabase.getNoteDao()).execute(note);
+        new WorkerAsyncTask(() -> mNoteDatabase.getNoteDao().delete(note)).execute();
     }
 }

@@ -6,6 +6,7 @@ import android.util.Log;
 import com.bravedroid.notesapp.repository.models.Note;
 import com.bravedroid.notesapp.repository.persistence.NoteDao;
 
+@Deprecated
 public class DeleteAsyncTask extends AsyncTask<Note, Void, Void> {
     private static final String TAG = "InsertAsyncTask";
 
