@@ -19,10 +19,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.bravedroid.notesapp.NotesApp;
 import com.bravedroid.notesapp.R;
 import com.bravedroid.notesapp.presentation.NoteRepository;
+import com.bravedroid.notesapp.presentation.util.Utility;
 import com.bravedroid.notesapp.presentation.view.LineEditText;
 import com.bravedroid.notesapp.repository.models.Note;
-import com.bravedroid.notesapp.repository.NoteRepositoryImpl;
-import com.bravedroid.notesapp.presentation.util.Utility;
 
 public class NoteDetailActivity extends AppCompatActivity implements
         View.OnTouchListener,
@@ -63,7 +62,7 @@ public class NoteDetailActivity extends AppCompatActivity implements
         mBackArrow = findViewById(R.id.toolbar_back_arrow);
 
         setListeners();
-        mNoteRepository =  ((NotesApp) getApplication()).getNoteRepository();
+        mNoteRepository = ((NotesApp) getApplication()).getNoteRepository();
         if (getIncomingIntent()) {
             //this is a new note,(EDIT MODE)
             setNewNoteProperties();
