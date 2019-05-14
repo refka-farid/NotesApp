@@ -11,12 +11,12 @@
         android:supportsRtl="false"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning,allowBackup">
-        <activity android:name=".NotesActivity">
+        <activity android:name=".presentation.activities.NotesActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".NoteDetailActivity" />
+        <activity android:name=".presentation.activities.NoteDetailActivity" />
     </application>
 </manifest>

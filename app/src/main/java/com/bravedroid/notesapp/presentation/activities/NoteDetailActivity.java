@@ -1,4 +1,4 @@
-package com.bravedroid.notesapp;
+package com.bravedroid.notesapp.presentation.activities;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -16,9 +16,12 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.bravedroid.notesapp.models.Note;
-import com.bravedroid.notesapp.persistence.NoteRepository;
-import com.bravedroid.notesapp.util.Utility;
+import com.bravedroid.notesapp.NotesApp;
+import com.bravedroid.notesapp.R;
+import com.bravedroid.notesapp.presentation.NoteRepository;
+import com.bravedroid.notesapp.presentation.util.Utility;
+import com.bravedroid.notesapp.presentation.view.LineEditText;
+import com.bravedroid.notesapp.repository.models.Note;
 
 public class NoteDetailActivity extends AppCompatActivity implements
         View.OnTouchListener,
@@ -59,7 +62,7 @@ public class NoteDetailActivity extends AppCompatActivity implements
         mBackArrow = findViewById(R.id.toolbar_back_arrow);
 
         setListeners();
-        mNoteRepository = new NoteRepository(this);
+        mNoteRepository = ((NotesApp) getApplication()).getNoteRepository();
         if (getIncomingIntent()) {
             //this is a new note,(EDIT MODE)
             setNewNoteProperties();

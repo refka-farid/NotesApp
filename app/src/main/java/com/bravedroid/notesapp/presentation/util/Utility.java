@@ -1,4 +1,4 @@
-package com.bravedroid.notesapp.util;
+package com.bravedroid.notesapp.presentation.util;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;

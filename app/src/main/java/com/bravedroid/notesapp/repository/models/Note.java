@@ -1,4 +1,4 @@
-package com.bravedroid.notesapp.models;
+package com.bravedroid.notesapp.repository.models;
 
 import android.os.Parcel;
 import android.os.Parcelable;

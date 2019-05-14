@@ -1,4 +1,4 @@
-package com.bravedroid.notesapp.adapters;
+package com.bravedroid.notesapp.presentation.adapters;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -10,12 +10,12 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bravedroid.notesapp.R;
-import com.bravedroid.notesapp.models.Note;
-import com.bravedroid.notesapp.util.Utility;
+import com.bravedroid.notesapp.presentation.util.Utility;
+import com.bravedroid.notesapp.repository.models.Note;
 
 import java.util.List;
 
-import static com.bravedroid.notesapp.adapters.NotesRecyclerAdapter.NoteViewHolder;
+import static com.bravedroid.notesapp.presentation.adapters.NotesRecyclerAdapter.NoteViewHolder;
 
 public class NotesRecyclerAdapter extends RecyclerView.Adapter<NoteViewHolder> {
     private List<Note> mNotes;
@@ -34,7 +34,6 @@ public class NotesRecyclerAdapter extends RecyclerView.Adapter<NoteViewHolder> {
                 .inflate(R.layout.layout_note_list_item, viewGroup, false);
         return new NoteViewHolder(itemView, mOnNoteListener);
     }
-
 
     @Override
     public void onBindViewHolder(@NonNull NoteViewHolder noteViewHolder, int position) {
@@ -57,22 +56,16 @@ public class NotesRecyclerAdapter extends RecyclerView.Adapter<NoteViewHolder> {
         return mNotes == null ? 0 : mNotes.size();
     }
 
-    public static class NoteViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public static class NoteViewHolder extends RecyclerView.ViewHolder {
         private TextView titleTV, timestampTV;
-        private OnNoteListener onNoteListener;
 
         NoteViewHolder(@NonNull View itemView, OnNoteListener onNoteListener) {
             super(itemView);
             titleTV = itemView.findViewById(R.id.note_title);
             timestampTV = itemView.findViewById(R.id.note_timestamp);
-            this.onNoteListener = onNoteListener;
-
-            itemView.setOnClickListener(this);
-        }
-
-        @Override
-        public void onClick(View v) {
-            onNoteListener.onNoteClick(getAdapterPosition());
+            itemView.setOnClickListener((View v) -> {
+                onNoteListener.onNoteClick(getAdapterPosition());
+            });
         }
     }
 
