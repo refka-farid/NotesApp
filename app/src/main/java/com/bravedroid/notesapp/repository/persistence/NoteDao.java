@@ -13,11 +13,15 @@ import java.util.List;
 
 @Dao
 public interface NoteDao {
+    // TODO: 14/05/2019 test methods 
     @Insert
     long[] insertNotes(Note... notes);
 
     @Query("SELECT * FROM notes")
     LiveData<List<Note>> getNotes();
+
+    @Query("SELECT * FROM notes")
+    List<Note> getNotes1();
 
     /*
     @Query("SELECT * FROM notes WHERE title LIKE :title")
@@ -26,6 +30,9 @@ public interface NoteDao {
 
     @Delete
     int delete(Note... notes);
+
+    @Query("DELETE FROM notes")
+    int deleteAll();
 
     @Update
     int update(Note... notes);

@@ -28,6 +28,8 @@ public class NotesActivity extends AppCompatActivity {
     private RecyclerView mRecyclerView;
 
     // vars
+    // TODO: 14/05/2019 remove list and use repository
+
     private List<Note> mNotes = new ArrayList<>();
     private NotesRecyclerAdapter mNotesRecyclerAdapter;
     private NoteRepository mNoteRepository;
@@ -54,6 +56,7 @@ public class NotesActivity extends AppCompatActivity {
         mNoteRepository.retrieveNoteTask().observe(this, new Observer<List<Note>>() {
             @Override
             public void onChanged(List<Note> notes) {
+                // TODO: 14/05/2019 create method addNotes(notes);
                 if (mNotes.size() > 0) {
                     mNotes.clear();
                 }
