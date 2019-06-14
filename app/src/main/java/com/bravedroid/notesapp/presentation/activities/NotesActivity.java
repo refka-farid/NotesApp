@@ -7,7 +7,6 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -19,19 +18,13 @@ import com.bravedroid.notesapp.presentation.adapters.NotesRecyclerAdapter;
 import com.bravedroid.notesapp.presentation.util.VerticalSpacingItemDecorator;
 import com.bravedroid.notesapp.repository.models.Note;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class NotesActivity extends AppCompatActivity {
     final static String TAG = "NotesActivity";
     // ui component
     private RecyclerView mRecyclerView;
-
-    // vars
-    // TODO: 14/05/2019 remove list and use repository
-
-    private List<Note> mNotes = new ArrayList<>();
     private NotesRecyclerAdapter mNotesRecyclerAdapter;
+
+    // persistence
     private NoteRepository mNoteRepository;
 
     @Override
@@ -53,19 +46,7 @@ public class NotesActivity extends AppCompatActivity {
     }
 
     private void retrieveNotes() {
-        mNoteRepository.retrieveNoteTask().observe(this, new Observer<List<Note>>() {
-            @Override
-            public void onChanged(List<Note> notes) {
-                // TODO: 14/05/2019 create method addNotes(notes);
-                if (mNotes.size() > 0) {
-                    mNotes.clear();
-                }
-                if (notes != null) {
-                    mNotes.addAll(notes);
-                }
-                mNotesRecyclerAdapter.notifyDataSetChanged();
-            }
-        });
+        mNoteRepository.retrieveNoteTask().observe(this, notes -> mNotesRecyclerAdapter.addNotes(notes));
     }
 
     private void initToolbar() {
@@ -77,23 +58,36 @@ public class NotesActivity extends AppCompatActivity {
     private void initRecyclerView() {
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mRecyclerView.addItemDecoration(new VerticalSpacingItemDecorator(10));
-        new ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(mRecyclerView);
-        mNotesRecyclerAdapter = new NotesRecyclerAdapter(mNotes, (int position) -> {
-            Log.d(TAG, "onNoteClick: clicked" + position);
-            Intent intent = new Intent(NotesActivity.this, NoteDetailActivity.class);
-            intent.putExtra("selected_note", mNotes.get(position));
-            startActivity(intent);
-        });
+
+        new ItemTouchHelper(new MyItemTouchHelper(swipedNote -> deleteNote(swipedNote))).attachToRecyclerView(mRecyclerView);
+
+        mNotesRecyclerAdapter = new NotesRecyclerAdapter(
+                (Note clickedNote) -> {
+                    Log.d(TAG, "onNoteClick: clicked" + clickedNote);
+                    Intent intent = new Intent(NotesActivity.this, NoteDetailActivity.class);
+                    intent.putExtra("selected_note", clickedNote);
+                    startActivity(intent);
+                });
         mRecyclerView.setAdapter(mNotesRecyclerAdapter);
     }
 
     private void deleteNote(Note note) {
-        mNotes.remove(note);
-        mNotesRecyclerAdapter.notifyDataSetChanged();
+        mNotesRecyclerAdapter.removeNote(note);
         mNoteRepository.deleteNote(note);
     }
 
-    private ItemTouchHelper.SimpleCallback itemTouchHelperCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT) {
+    private static class MyItemTouchHelper extends ItemTouchHelper.SimpleCallback {
+        private OnNoteListener onNoteListener;
+
+        public MyItemTouchHelper(OnNoteListener onNoteListener) {
+            this(0, 0, onNoteListener);
+        }
+
+        private MyItemTouchHelper(int dragDirsIgnored, int swipeDirsIgnored, OnNoteListener onNoteListener) {
+            super(0, ItemTouchHelper.RIGHT);
+            this.onNoteListener = onNoteListener;
+        }
+
         @Override
         public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
             return false;
@@ -101,7 +95,13 @@ public class NotesActivity extends AppCompatActivity {
 
         @Override
         public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-            deleteNote(mNotes.get(viewHolder.getAdapterPosition()));
+            NotesRecyclerAdapter.NoteViewHolder noteViewHolder = (NotesRecyclerAdapter.NoteViewHolder) viewHolder;
+            onNoteListener.onNoteSwiped(noteViewHolder.getNote(viewHolder.getAdapterPosition()));
         }
-    };
+
+        @FunctionalInterface
+        public interface OnNoteListener {
+            void onNoteSwiped(Note swipedNote);
+        }
+    }
 }

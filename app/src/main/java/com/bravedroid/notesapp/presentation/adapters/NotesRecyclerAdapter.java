@@ -13,17 +13,16 @@ import com.bravedroid.notesapp.R;
 import com.bravedroid.notesapp.presentation.util.Utility;
 import com.bravedroid.notesapp.repository.models.Note;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import static com.bravedroid.notesapp.presentation.adapters.NotesRecyclerAdapter.NoteViewHolder;
-
-public class NotesRecyclerAdapter extends RecyclerView.Adapter<NoteViewHolder> {
+public class NotesRecyclerAdapter extends RecyclerView.Adapter<NotesRecyclerAdapter.NoteViewHolder> {
     private List<Note> mNotes;
     private OnNoteListener mOnNoteListener;
     private final static String TAG = "NotesRecyclerAdapter";
 
-    public NotesRecyclerAdapter(List<Note> notes, OnNoteListener onNoteListener) {
-        this.mNotes = notes;
+    public NotesRecyclerAdapter(OnNoteListener onNoteListener) {
+        this.mNotes = new ArrayList<>();
         this.mOnNoteListener = onNoteListener;
     }
 
@@ -32,7 +31,7 @@ public class NotesRecyclerAdapter extends RecyclerView.Adapter<NoteViewHolder> {
     public NoteViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
         View itemView = LayoutInflater.from(viewGroup.getContext())
                 .inflate(R.layout.layout_note_list_item, viewGroup, false);
-        return new NoteViewHolder(itemView, mOnNoteListener);
+        return new NoteViewHolder(itemView, mOnNoteListener, mNotes);
     }
 
     @Override
@@ -56,21 +55,46 @@ public class NotesRecyclerAdapter extends RecyclerView.Adapter<NoteViewHolder> {
         return mNotes == null ? 0 : mNotes.size();
     }
 
-    public static class NoteViewHolder extends RecyclerView.ViewHolder {
-        private TextView titleTV, timestampTV;
-
-        NoteViewHolder(@NonNull View itemView, OnNoteListener onNoteListener) {
-            super(itemView);
-            titleTV = itemView.findViewById(R.id.note_title);
-            timestampTV = itemView.findViewById(R.id.note_timestamp);
-            itemView.setOnClickListener((View v) -> {
-                onNoteListener.onNoteClick(getAdapterPosition());
-            });
+    public void addNotes(List<Note> notes) {
+        if (notes != null) {
+            if (mNotes.size() > 0) {
+                mNotes.clear();
+            }
+            mNotes.addAll(notes);
+            notifyDataSetChanged();
         }
+    }
+
+    public void removeNote(Note note) {
+        mNotes.remove(note);
+        notifyDataSetChanged();
     }
 
     @FunctionalInterface
     public interface OnNoteListener {
-        void onNoteClick(int position);
+        void onNoteClick(Note clickedNote);
+    }
+
+    public static class NoteViewHolder extends RecyclerView.ViewHolder {
+        private List<Note> mNotes;
+        private TextView titleTV, timestampTV;
+
+        NoteViewHolder(@NonNull View itemView, OnNoteListener onNoteListener, List<Note> notes) {
+            super(itemView);
+            titleTV = itemView.findViewById(R.id.note_title);
+            timestampTV = itemView.findViewById(R.id.note_timestamp);
+            this.mNotes = notes;
+            itemView.setOnClickListener((View v) -> {
+                //onNoteListener.onNoteClick(getAdapterPosition());
+                int position = getAdapterPosition();
+                Note clickedNote = notes.get(position);
+                onNoteListener.onNoteClick(clickedNote);
+            });
+        }
+
+        public Note getNote(int adapterPosition) {
+            Note note = mNotes.get(adapterPosition);
+            return note;
+        }
     }
 }

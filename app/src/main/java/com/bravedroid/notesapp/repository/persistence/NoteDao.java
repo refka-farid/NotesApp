@@ -13,7 +13,6 @@ import java.util.List;
 
 @Dao
 public interface NoteDao {
-    // TODO: 14/05/2019 test methods 
     @Insert
     long[] insertNotes(Note... notes);
 
